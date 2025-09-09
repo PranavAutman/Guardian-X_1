@@ -1259,7 +1259,7 @@ class GuardianXAssistant {
                 if (leftMouth && rightMouth && centerMouth) {
                     // Check if mouth corners are lowered (sadness indicator)
                     const mouthCurvature = centerMouth.y - (leftMouth.y + rightMouth.y) / 2;
-                    return Math.max(0, Math.min(1, mouthCurvature * 15));
+                    return Math.max(0, Math.min(1, mouthCurvature * 10));
                 }
             }
         } catch (error) {
@@ -1284,7 +1284,7 @@ class GuardianXAssistant {
                     const avgEyeHeight = (leftEyeHeight + rightEyeHeight) / 2;
                     
                     // High eye openness indicates surprise
-                    return Math.max(0, Math.min(1, (avgEyeHeight - 0.01) * 50));
+                    return Math.max(0, Math.min(1, (avgEyeHeight - 0.01) * 10));
                 }
             }
         } catch (error) {
