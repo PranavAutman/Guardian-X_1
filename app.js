@@ -1138,7 +1138,7 @@ class GuardianXAssistant {
                     surprised: 0,
                     fear: 0,
                     disgust: 0,
-                    neutral: 1
+                    neutral: 0
                 };
                 
                 blendshapes.categories.forEach(category => {
