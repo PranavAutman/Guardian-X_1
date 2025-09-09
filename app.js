@@ -1212,7 +1212,7 @@ class GuardianXAssistant {
                 
                 // Find dominant emotion
                 let maxEmotion = 'neutral';
-                let maxScore = 0.3;
+                let maxScore = 0.05;
                 
                 Object.entries(emotionScores).forEach(([emotion, score]) => {
                     if (score > maxScore) {
