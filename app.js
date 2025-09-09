@@ -1128,70 +1128,68 @@ class GuardianXAssistant {
     analyzeEmotionsFromBlendshapes(faceBlendshapes) {
         const emotions = [];
         
-        faceBlendshapes.forEach((blendshapes, faceIndex) => {
-            if (blendshapes && blendshapes.categories) {
-                // Extract emotion-related blend shapes
-                const emotionScores = {
-                    happy: 0,
-                    sad: 0,
-                    angry: 0,
-                    surprised: 0,
-                    fear: 0,
-                    disgust: 0,
-                    neutral: 1
-                };
-                
-                blendshapes.categories.forEach(category => {
-                    const name = category.categoryName.toLowerCase();
-                    const score = category.score;
-                    
-                    // Map blend shape names to emotions
-                    if (name.includes('smile') || name.includes('mouth_smile')) {
-                        emotionScores.happy = Math.max(emotionScores.happy, score);
-                    } else if (name.includes('frown') || name.includes('mouth_frown')) {
-                        emotionScores.sad = Math.max(emotionScores.sad, score);
-                    } else if (name.includes('brow_down') || name.includes('squint')) {
-                        emotionScores.angry = Math.max(emotionScores.angry, score);
-                    } else if (name.includes('eye_wide') || name.includes('brow_up')) {
-                        emotionScores.surprised = Math.max(emotionScores.surprised, score);
-                    } else if (name.includes('jaw_open') && score > 0.3) {
-                        emotionScores.surprised = Math.max(emotionScores.surprised, score * 0.7);
-                    }
-                });
-                
-                // Determine dominant emotion
-                let maxEmotion = 'neutral';
-                let maxScore = 0.05; // Threshold for emotion detection
-                
-                Object.entries(emotionScores).forEach(([emotion, score]) => {
-                     if (emotion !== 'neutral' && score > 0.05) {
-                            if (score > maxScore || maxEmotion === 'neutral') {
-                                maxEmotion = emotion;
-                                maxScore = score;
-                            }
-                        } else if (emotion === 'neutral' && maxEmotion === 'neutral') {
-                            // Only accept neutral if no better emotion found yet
+            faceBlendshapes.forEach((blendshapes, faceIndex) => {
+                if (blendshapes && blendshapes.categories) {
+                    const emotionScores = {
+                        happy: 0,
+                        sad: 0,
+                        angry: 0,
+                        surprised: 0,
+                        fear: 0,
+                        disgust: 0,
+                        neutral: 0
+                    };
+        
+                    blendshapes.categories.forEach(category => {
+                        const name = category.categoryName.toLowerCase();
+                        const score = category.score;
+        
+                        if (name.includes('smile') || name.includes('mouth_smile')) {
+                            emotionScores.happy = Math.max(emotionScores.happy, score);
+                        } else if (name.includes('frown') || name.includes('mouth_frown')) {
+                            emotionScores.sad = Math.max(emotionScores.sad, score);
+                        } else if (name.includes('brow_down') || name.includes('squint')) {
+                            emotionScores.angry = Math.max(emotionScores.angry, score);
+                        } else if (name.includes('eye_wide') || name.includes('brow_up')) {
+                            emotionScores.surprised = Math.max(emotionScores.surprised, score);
+                        } else if (name.includes('jaw_open') && score > 0.3) {
+                            emotionScores.surprised = Math.max(emotionScores.surprised, score * 0.7);
+                        }
+                    });
+        
+                    // Pick the dominant emotion
+                    let maxEmotion = 'neutral';
+                    let maxScore = 0.25; // require at least 25% confidence to override neutral
+        
+                    Object.entries(emotionScores).forEach(([emotion, score]) => {
+                        if (emotion !== 'neutral' && score > maxScore) {
+                            maxEmotion = emotion;
                             maxScore = score;
                         }
-                });
-                
-                emotions.push({
-                    faceIndex,
-                    emotion: maxEmotion,
-                    confidence: maxScore,
-                    allScores: emotionScores
-                });
-            } else {
-                emotions.push({
-                    faceIndex,
-                    emotion: 'neutral',
-                    confidence: 0.5,
-                    allScores: { neutral: 0.5 }
-                });
-            }
-        });
+                    });
         
-        return emotions;
+                    // If nothing passed the threshold, default to neutral with medium confidence
+                    if (maxEmotion === 'neutral') {
+                        maxScore = 0.6;
+                    }
+        
+                    emotions.push({
+                        faceIndex,
+                        emotion: maxEmotion,
+                        confidence: maxScore,
+                        allScores: emotionScores
+                    });
+                } else {
+                    emotions.push({
+                        faceIndex,
+                        emotion: 'neutral',
+                        confidence: 0.6,
+                        allScores: { neutral: 0.6 }
+                    });
+                }
+            });
+        
+            return emotions;
     }
     
     analyzeEmotionsFromLandmarks(faceLandmarks) {
