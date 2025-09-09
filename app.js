@@ -1154,14 +1154,14 @@ class GuardianXAssistant {
                         emotionScores.angry = Math.max(emotionScores.angry, score);
                     } else if (name.includes('eye_wide') || name.includes('brow_up')) {
                         emotionScores.surprised = Math.max(emotionScores.surprised, score);
-                    } else if (name.includes('jaw_open') && score > 0.3) {
-                        emotionScores.surprised = Math.max(emotionScores.surprised, score * 0.7);
+                    } else if (name.includes('jaw_open') && score > 0.2) {
+                        emotionScores.surprised = Math.max(emotionScores.surprised, score * 1);
                     }
                 });
                 
                 // Determine dominant emotion
                 let maxEmotion = 'neutral';
-                let maxScore = 0.3; // Threshold for emotion detection
+                let maxScore = 0.2; // Threshold for emotion detection
                 
                 Object.entries(emotionScores).forEach(([emotion, score]) => {
                     if (score > maxScore) {
@@ -1202,7 +1202,7 @@ class GuardianXAssistant {
                     happy: this.detectSmileFromLandmarks(landmarks),
                     sad: this.detectSadnessFromLandmarks(landmarks),
                     surprised: this.detectSurpriseFromLandmarks(landmarks),
-                    neutral: 0.5
+                    neutral: 0.4
                 };
                 
                 // Find dominant emotion
@@ -1259,7 +1259,7 @@ class GuardianXAssistant {
                 if (leftMouth && rightMouth && centerMouth) {
                     // Check if mouth corners are lowered (sadness indicator)
                     const mouthCurvature = centerMouth.y - (leftMouth.y + rightMouth.y) / 2;
-                    return Math.max(0, Math.min(1, mouthCurvature * 15));
+                    return Math.max(0, Math.min(1, mouthCurvature * 100));
                 }
             }
         } catch (error) {
@@ -1284,7 +1284,7 @@ class GuardianXAssistant {
                     const avgEyeHeight = (leftEyeHeight + rightEyeHeight) / 2;
                     
                     // High eye openness indicates surprise
-                    return Math.max(0, Math.min(1, (avgEyeHeight - 0.01) * 50));
+                    return Math.max(0, Math.min(1, (avgEyeHeight - 0.01) * 90));
                 }
             }
         } catch (error) {
