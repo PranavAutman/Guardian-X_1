@@ -1202,7 +1202,7 @@ class GuardianXAssistant {
                     happy: this.detectSmileFromLandmarks(landmarks),
                     sad: this.detectSadnessFromLandmarks(landmarks),
                     surprised: this.detectSurpriseFromLandmarks(landmarks),
-                    neutral: 0.5
+                    neutral: 0.1
                 };
                 
                 // Find dominant emotion
