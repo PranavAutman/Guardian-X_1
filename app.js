@@ -1161,17 +1161,14 @@ analyzeEmotionsFromBlendShapes(faceBlendshapes) {
                 }
             });
             emotionScores.neutral = 0.15;
-
             let maxEmotion = 'neutral';
-            let maxScore = 0.08; // Lowered threshold for higher sensitivity
-
+            let maxScore = 0.05; // Lowered threshold for higher sensitivity
             Object.entries(emotionScores).forEach(([emotion, score]) => {
                 if (score > maxScore) {
                     maxEmotion = emotion;
                     maxScore = score;
                 }
             });
-
             emotions.push({
                 faceIndex,
                 emotion: maxEmotion,
@@ -1221,6 +1218,7 @@ analyzeEmotionsFromLandmarks(faceLandmarks) {
     });
     return emotions;
 },
+
 
 detectSmile(landmarks) {
     try {
