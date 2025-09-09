@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian X AI Assistant - Enhanced with Face Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+</head>
+<body>
+    <div class="particles-bg"></div>
+    
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>Guardian X AI</h2>
+            <p>First-Generation Life-Saving Robot • BIT Robotics</p>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div id="loadingStatus" class="loading-status">Initializing systems...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <div>
+                    <h1>Guardian X AI Assistant</h1>
+                    <div class="logo-subtitle">Enhanced with Face Analysis</div>
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <div class="mission-selector">
+                    <button class="mission-btn active" data-mode="POLICING">POLICING MODE</button>
+                    <button class="mission-btn" data-mode="MEDICAL">MEDICAL MODE</button>
+                    <button class="mission-btn" data-mode="DEFENSE">DEFENSE MODE</button>
+                </div>
+                
+                <div id="systemStatus" class="system-status">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <div id="statusText" class="status-text">🤖 AI READY</div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div id="currentTime" class="current-time">--:--:--</div>
+                <button id="emergencyBtn" class="emergency-btn">EMERGENCY STOP</button>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- AI Voice Assistant Panel -->
+            <section class="panel ai-panel">
+                <div class="panel-header">
+                    <h2>🧠 AI Voice Assistant</h2>
+                    <div id="aiMode" class="mode-indicator">POLICING MODE</div>
+                </div>
+                
+                <!-- Google API Configuration -->
+                <div class="config-section">
+                    <div class="config-header">
+                        <h3>🔑 Google Gemini API Configuration</h3>
+                    </div>
+                    <div class="api-key-input-group">
+                        <input type="password" id="apiKeyInput" placeholder="Enter your Google Gemini API key (AIzaSy...)">
+                        <button id="saveApiKeyBtn">Save</button>
+                        <button id="testApiKeyBtn">Test</button>
+                    </div>
+                    <div id="apiKeyStatus" class="status-message"></div>
+                </div>
+                
+                <div class="voice-controls">
+                    <div class="voice-input">
+                        <button id="voiceToggle" class="btn btn--primary voice-btn">
+                            🎤 Click to activate AI voice commands
+                        </button>
+                        
+                        <div id="voiceIndicator" class="voice-indicator">
+                            <div id="listeningPulse" class="listening-pulse"></div>
+                            <div id="voiceStatus" class="voice-status">Ready</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-capabilities">
+                        <h4>🧠 AI Capabilities</h4>
+                        <div class="capability-tags">
+                            <span class="capability-tag">Object Detection</span>
+                            <span class="capability-tag">Face Analysis</span>
+                            <span class="capability-tag">Threat Assessment</span>
+                            <span class="capability-tag">Medical Analysis</span>
+                            <span class="capability-tag">Conversation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="voice-settings">
+                        <h4>Voice Response Settings</h4>
+                        
+                        <div class="setting-group">
+                            <label>Voice:</label>
+                            <select id="voiceSelect" class="form-control"></select>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label>Speed:</label>
+                            <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="0.9">
+                            <span id="rateValue">0.9x</span>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label>Volume:</label>
+                            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.8">
+                            <span id="volumeValue">80%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="conversation">
+                    <div class="conversation-header">
+                        <h4>🗨️ Live AI Conversation</h4>
+                        <button id="clearConversation" class="btn btn--sm">Clear</button>
+                    </div>
+                    <div id="conversationLog" class="conversation-log"></div>
+                </div>
+                
+                <div class="quick-commands">
+                    <h4>💬 Try These Questions</h4>
+                    <div class="command-buttons">
+                        <button class="btn btn--sm command-btn" data-command="What do you see?">What do you see?</button>
+                        <button class="btn btn--sm command-btn" data-command="Analyze the scene">Analyze scene</button>
+                        <button class="btn btn--sm command-btn" data-command="Any threats detected?">Security check</button>
+                        <button class="btn btn--sm command-btn" data-command="How many faces do you see?">Face count</button>
+                        <button class="btn btn--sm command-btn" data-command="Medical assessment">Medical check</button>
+                        <button class="btn btn--sm command-btn" data-command="What are your capabilities?">Capabilities</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Vision System Panel -->
+            <section class="panel vision-panel">
+                <div class="panel-header">
+                    <h2>👁️ AI Vision System</h2>
+                    <div class="vision-stats">
+                        <span class="stat-item">Objects: <span id="objectCount">0</span></span>
+                        <span class="stat-item">Faces: <span id="faceCount">0</span></span>
+                    </div>
+                </div>
+                
+                <div class="camera-controls">
+                    <select id="cameraSelect" class="form-control"></select>
+                    <button id="startCamera" class="btn btn--primary">Start Camera</button>
+                    <button id="stopCamera" class="btn btn--secondary">Stop Camera</button>
+                </div>
+                
+                <div class="camera-container">
+                    <video id="cameraVideo" autoplay muted></video>
+                    <canvas id="detectionCanvas"></canvas>
+                    
+                    <div class="camera-overlay">
+                        <div class="overlay-stats">
+                            <div class="stat-item">FPS: <span id="fpsCounter">0</span></div>
+                            <div class="stat-item">People: <span id="peopleCount">0</span></div>
+                            <div class="stat-item">Items: <span id="itemsCount">0</span></div>
+                        </div>
+                        
+                        <div class="confidence-control">
+                            <label>Confidence:</label>
+                            <input type="range" id="confidenceSlider" min="0.1" max="1" step="0.1" value="0.3">
+                            <span id="confidenceValue">0.3</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-content">
+                    <div class="summary-stats">
+                        <div class="stat">
+                            <span class="stat-label">Total Objects:</span>
+                            <span class="stat-value" id="totalObjects">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">People:</span>
+                            <span class="stat-value" id="peopleCount">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Items:</span>
+                            <span class="stat-value" id="itemsCount">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Faces:</span>
+                            <span class="stat-value" id="faceCount">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-tabs">
+                        <button class="tab-btn active" data-tab="objects">Objects</button>
+                        <button class="tab-btn" data-tab="faces">Faces</button>
+                        <button class="tab-btn" data-tab="threats">Threats</button>
+                        <button class="tab-btn" data-tab="medical">Medical</button>
+                    </div>
+                    
+                    <div class="tab-content" id="objectsTab">
+                        <div id="objectList" class="object-list">
+                            <div class="no-detections">Start camera to begin AI-powered object detection...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content hidden" id="facesTab">
+                        <div id="faceLandmarksList" class="face-landmarks-list">
+                            <div class="no-detections">Start camera to begin facial analysis...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content hidden" id="threatsTab">
+                        <div id="threatLevel" class="threat-level low">SECURE</div>
+                        <div id="threatDetails" class="threat-details">
+                            No threats detected. Environment appears safe.
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content hidden" id="medicalTab">
+                        <div id="medicalItems" class="medical-analysis">
+                            Medical assessment ready. Start camera to begin patient monitoring.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Analytics Panel -->
+            <section class="panel analytics-panel">
+                <div class="panel-header">
+                    <h2>📊 AI Analytics</h2>
+                    <div class="uptime-display">
+                        <span>Uptime: <span id="uptime">00:00:00</span></span>
+                    </div>
+                </div>
+                
+                <div class="performance-section">
+                    <h4>🧠 AI Performance</h4>
+                    <div class="performance-stats">
+                        <div class="perf-stat">
+                            <span class="stat-label">AI Processing:</span>
+                            <span class="stat-value" id="processingTime">0ms</span>
+                        </div>
+                        <div class="perf-stat">
+                            <span class="stat-label">Detection Rate:</span>
+                            <span class="stat-value" id="detectionRate">0/sec</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mission-analytics">
+                    <h4>🎯 Mission Progress</h4>
+                    <div class="analytics-grid">
+                        <div class="analytic-item">
+                            <div class="analytic-label">AI Scans</div>
+                            <div class="analytic-value" id="scansCompleted">0</div>
+                        </div>
+                        <div class="analytic-item">
+                            <div class="analytic-label">Commands Processed</div>
+                            <div class="analytic-value" id="commandsProcessed">0</div>
+                        </div>
+                        <div class="analytic-item">
+                            <div class="analytic-label">AI Response Time</div>
+                            <div class="analytic-value" id="avgResponseTime">--ms</div>
+                        </div>
+                        <div class="analytic-item">
+                            <div class="analytic-label">System Accuracy</div>
+                            <div class="analytic-value" id="systemAccuracy">95%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <h4>🔄 Recent AI Activity</h4>
+                    <div id="activityLog" class="activity-log">
+                        <div class="activity-item">
+                            <div class="activity-icon">✅</div>
+                            <div class="activity-content">
+                                <div class="activity-text">AI systems initialized successfully</div>
+                                <div class="activity-time">System startup</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="system-health">
+                    <h4>💚 AI System Health</h4>
+                    <div class="health-indicators">
+                        <div class="health-item">
+                            <span class="health-label">Camera:</span>
+                            <span id="cameraHealth" class="health-status offline">Offline</span>
+                        </div>
+                        <div class="health-item">
+                            <span class="health-label">AI Models:</span>
+                            <span id="modelsHealth" class="health-status loading">Loading</span>
+                        </div>
+                        <div class="health-item">
+                            <span class="health-label">Face Analysis:</span>
+                            <span id="faceHealth" class="health-status loading">Loading</span>
+                        </div>
+                        <div class="health-item">
+                            <span class="health-label">Voice AI:</span>
+                            <span id="voiceHealth" class="health-status offline">Ready</span>
+                        </div>
+                        <div class="health-item">
+                            <span class="health-label">Detection:</span>
+                            <span id="detectionHealth" class="health-status offline">Standby</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+        <div class="status-section">
+            <div class="status-item">
+                <div class="status-dot" id="overallStatus"></div>
+                <span id="overallStatusText">Initializing</span>
+            </div>
+            
+            <div class="status-item">
+                <span>Objects: <span id="objectsTracked">0</span></span>
+            </div>
+            
+            <div class="status-item">
+                <span>Voice: <span id="voiceStatusText">Ready</span></span>
+            </div>
+        </div>
+        
+        <div class="status-ticker">
+            <div id="statusTicker" class="ticker-text">🤖 Guardian X AI initializing systems...</div>
+        </div>
+    </footer>
+
+    <script src="enhanced-app.js"></script>
+</body>
+</html>
