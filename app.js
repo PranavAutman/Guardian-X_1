@@ -1138,7 +1138,7 @@ class GuardianXAssistant {
                     surprised: 0,
                     fear: 0,
                     disgust: 0,
-                    neutral: 1
+                    neutral: 0
                 };
                 
                 blendshapes.categories.forEach(category => {
@@ -1161,7 +1161,7 @@ class GuardianXAssistant {
                 
                 // Determine dominant emotion
                 let maxEmotion = 'neutral';
-                let maxScore = 0.3; // Threshold for emotion detection
+                let maxScore = 0.1; // Threshold for emotion detection
                 
                 Object.entries(emotionScores).forEach(([emotion, score]) => {
                     if (score > maxScore) {
@@ -1180,8 +1180,8 @@ class GuardianXAssistant {
                 emotions.push({
                     faceIndex,
                     emotion: 'neutral',
-                    confidence: 0.5,
-                    allScores: { neutral: 0.5 }
+                    confidence: 0.1,
+                    allScores: { neutral: 0.1 }
                 });
             }
         });
@@ -1207,7 +1207,7 @@ class GuardianXAssistant {
                 
                 // Find dominant emotion
                 let maxEmotion = 'neutral';
-                let maxScore = 0.3;
+                let maxScore = 0.1;
                 
                 Object.entries(emotionScores).forEach(([emotion, score]) => {
                     if (score > maxScore) {
