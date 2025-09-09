@@ -1125,72 +1125,177 @@ class GuardianXAssistant {
         requestAnimationFrame(detectLoop);
     }
     
-    analyzeEmotionsFromBlendshapes(faceBlendshapes) {
-        const emotions = [];
-        
-            faceBlendshapes.forEach((blendshapes, faceIndex) => {
-                if (blendshapes && blendshapes.categories) {
-                    const emotionScores = {
-                        happy: 0,
-                        sad: 0,
-                        angry: 0,
-                        surprised: 0,
-                        fear: 0,
-                        disgust: 0,
-                        neutral: 0
-                    };
-        
-                    blendshapes.categories.forEach(category => {
-                        const name = category.categoryName.toLowerCase();
-                        const score = category.score;
-        
-                        if (name.includes('smile') || name.includes('mouth_smile')) {
-                            emotionScores.happy = Math.max(emotionScores.happy, score);
-                        } else if (name.includes('frown') || name.includes('mouth_frown')) {
-                            emotionScores.sad = Math.max(emotionScores.sad, score);
-                        } else if (name.includes('brow_down') || name.includes('squint')) {
-                            emotionScores.angry = Math.max(emotionScores.angry, score);
-                        } else if (name.includes('eye_wide') || name.includes('brow_up')) {
-                            emotionScores.surprised = Math.max(emotionScores.surprised, score);
-                        } else if (name.includes('jaw_open') && score > 0.3) {
-                            emotionScores.surprised = Math.max(emotionScores.surprised, score * 0.7);
-                        }
-                    });
-        
-                    // Pick the dominant emotion
-                    let maxEmotion = 'neutral';
-                    let maxScore = 0.25; // require at least 25% confidence to override neutral
-        
-                    Object.entries(emotionScores).forEach(([emotion, score]) => {
-                        if (emotion !== 'neutral' && score > maxScore) {
-                            maxEmotion = emotion;
-                            maxScore = score;
-                        }
-                    });
-        
-                    // If nothing passed the threshold, default to neutral with medium confidence
-                    if (maxEmotion === 'neutral') {
-                        maxScore = 0.6;
-                    }
-        
-                    emotions.push({
-                        faceIndex,
-                        emotion: maxEmotion,
-                        confidence: maxScore,
-                        allScores: emotionScores
-                    });
-                } else {
-                    emotions.push({
-                        faceIndex,
-                        emotion: 'neutral',
-                        confidence: 0.6,
-                        allScores: { neutral: 0.6 }
-                    });
-                }
+   function startEmotionCalibration(frames = 90) {
+  analyzeEmotionsFromBlendshapes._state = analyzeEmotionsFromBlendshapes._state || {};
+  analyzeEmotionsFromBlendshapes._state.cal = {
+    framesLeft: Math.max(15, frames),
+    sums: Object.create(null),
+    counts: Object.create(null)
+  };
+}
+
+// ---- Drop-in replacement ----
+function analyzeEmotionsFromBlendshapes(faceBlendshapes) {
+  const S = analyzeEmotionsFromBlendshapes._state ||
+            (analyzeEmotionsFromBlendshapes._state = {
+              faces: {},           // per-face state
+              baseline: Object.create(null), // per-feature neutral baselines
+              cal: null            // calibration accumulator
             });
-        
-            return emotions;
+
+  // helper: get max score for a feature root across left/right variants
+  const getFeat = (cats, root) => {
+    let m = 0;
+    const r = root.toLowerCase();
+    for (const c of cats) {
+      const n = c.categoryName.toLowerCase();
+      if (n.includes(r)) m = Math.max(m, c.score || 0);
     }
+    // subtract baseline (personal neutral) and tiny epsilon
+    const b = S.baseline[root] || 0;
+    const v = Math.max(0, m - b - 0.03);
+    return v;
+  };
+
+  // collect results for each detected face
+  const emotions = [];
+
+  faceBlendshapes.forEach((blendshapes, faceIndex) => {
+    if (!blendshapes || !blendshapes.categories) {
+      emotions.push({ faceIndex, emotion: 'neutral', confidence: 0.6, allScores: { neutral: 0.6 } });
+      return;
+    }
+    const cats = blendshapes.categories;
+
+    // --- Live calibration (if running) ---
+    if (S.cal && S.cal.framesLeft > 0) {
+      // features we care about for baseline
+      const roots = [
+        'mouth_smile','smile','mouth_frown','frown',
+        'brow_down','eye_squint','eye_wide',
+        'brow_up','brow_inner_up','jaw_open',
+        'nose_wrinkle','upper_lip_raise','mouth_stretch','cheek_squint','cheek_puff'
+      ];
+      for (const r of roots) {
+        // accumulate raw (pre-baseline) feature values
+        let raw = 0;
+        for (const c of cats) {
+          const n = c.categoryName.toLowerCase();
+          if (n.includes(r)) raw = Math.max(raw, c.score || 0);
+        }
+        S.cal.sums[r] = (S.cal.sums[r] || 0) + raw;
+        S.cal.counts[r] = (S.cal.counts[r] || 0) + 1;
+      }
+      S.cal.framesLeft -= 1;
+      if (S.cal.framesLeft === 0) {
+        // finalize baselines conservatively (slightly higher to avoid false positives)
+        for (const r in S.cal.sums) {
+          const avg = S.cal.sums[r] / Math.max(1, S.cal.counts[r]);
+          S.baseline[r] = Math.min(0.35, avg * 1.15);
+        }
+        S.cal = null;
+      }
+    }
+
+    // --- Feature extraction with baseline subtraction ---
+    const smile        = Math.max(getFeat(cats,'mouth_smile'), getFeat(cats,'smile'));
+    const frown        = Math.max(getFeat(cats,'mouth_frown'), getFeat(cats,'frown'));
+    const browDown     = getFeat(cats,'brow_down');
+    const browUp       = getFeat(cats,'brow_up');
+    const browInnerUp  = getFeat(cats,'brow_inner_up'); // can signal sadness/concern
+    const squint       = Math.max(getFeat(cats,'eye_squint'), getFeat(cats,'squint'));
+    const eyeWide      = Math.max(getFeat(cats,'eye_wide'), getFeat(cats,'eyes_wide'));
+    const jawOpen      = getFeat(cats,'jaw_open');
+    const noseWrinkle  = Math.max(getFeat(cats,'nose_wrinkle'), getFeat(cats,'nose_sneer'));
+    const upperLipRise = Math.max(getFeat(cats,'upper_lip_raise'), getFeat(cats,'lip_raise'));
+    const mouthStretch = getFeat(cats,'mouth_stretch');
+    const cheekRaise   = Math.max(getFeat(cats,'cheek_squint'), getFeat(cats,'cheek_puff'));
+
+    // --- Raw emotion scores (weighted) ---
+    const raw = {
+      happy:     clamp01( 1.00*smile + 0.35*cheekRaise - 0.20*frown ),
+      angry:     clamp01( 0.90*browDown + 0.70*squint + 0.20*jawOpen - 0.15*smile ),
+      sad:       clamp01( 0.85*frown + 0.30*browInnerUp - 0.10*smile ),
+      surprised: clamp01( 0.65*eyeWide + 0.60*browUp + 0.50*jawOpen ),
+      disgust:   clamp01( 0.75*noseWrinkle + 0.55*upperLipRise - 0.10*smile ),
+      fear:      clamp01( 0.60*eyeWide + 0.45*mouthStretch + 0.35*browUp + 0.30*jawOpen - 0.10*smile ),
+      neutral:   0 // computed via dead-zone/hysteresis, not by sum
+    };
+
+    // --- Per-face temporal smoothing (EMA) ---
+    const faceState = S.faces[faceIndex] || (S.faces[faceIndex] = {
+      ema: { happy:0, sad:0, angry:0, surprised:0, fear:0, disgust:0 },
+      lastEmotion: 'neutral',
+      lastScore: 0,
+      hold: 0
+    });
+    const emaAlpha = 0.55; // higher = smoother (0.5–0.8)
+    for (const k of Object.keys(faceState.ema)) {
+      faceState.ema[k] = emaAlpha*faceState.ema[k] + (1-emaAlpha)*raw[k];
+    }
+
+    // --- Pick candidate with neutral dead-zone ---
+    // use EMA scores for stability
+    const entries = Object.entries(faceState.ema);
+    entries.sort((a,b)=> b[1]-a[1]);
+    const [topEmotion, topScore] = entries[0];
+    const secondScore = entries[1] ? entries[1][1] : 0;
+
+    // neutral dead-zone & margin
+    const DEAD = 0.38;          // require at least this to leave neutral
+    const MARGIN = 0.10;        // top must beat runner-up by this to be confident
+    const HYST = 0.12;          // extra needed to switch away from current label
+
+    let chosen = 'neutral';
+    let conf = 0.6;
+
+    const confidentTop = (topScore >= DEAD) && ((topScore - secondScore) >= MARGIN);
+
+    if (confidentTop) {
+      // hysteresis: don’t flip unless clearly better
+      if (faceState.lastEmotion !== 'neutral' && topEmotion !== faceState.lastEmotion) {
+        if (topScore < faceState.lastScore + HYST) {
+          chosen = faceState.lastEmotion;
+          conf = faceState.lastScore * 0.9;
+        } else {
+          chosen = topEmotion;
+          conf = topScore;
+        }
+      } else {
+        chosen = topEmotion;
+        conf = topScore;
+      }
+    } else {
+      chosen = 'neutral';
+      conf = 0.7 - Math.max(0, DEAD - topScore) * 0.5; // lower conf if near threshold
+    }
+
+    // update state
+    if (chosen !== faceState.lastEmotion) {
+      faceState.lastEmotion = chosen;
+      faceState.lastScore = (chosen === 'neutral') ? 0.6 : Math.max(0.35, topScore);
+      faceState.hold = 6; // small hold to prevent frame-to-frame flicker
+    } else {
+      faceState.lastScore = (chosen === 'neutral') ? 0.6 : Math.max(faceState.lastScore*0.9, topScore);
+      faceState.hold = Math.max(0, faceState.hold - 1);
+    }
+
+    // expose scores (post-EMA)
+    const allScores = { ...faceState.ema, neutral: (chosen === 'neutral') ? conf : 0 };
+
+    emotions.push({
+      faceIndex,
+      emotion: chosen,
+      confidence: clamp01(conf),
+      allScores
+    });
+  });
+
+  return emotions;
+
+  // utils
+  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+}
     
     analyzeEmotionsFromLandmarks(faceLandmarks) {
         // Fallback emotion analysis using geometric features of landmarks
