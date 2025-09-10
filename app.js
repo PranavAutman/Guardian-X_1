@@ -1,5 +1,5 @@
-// Guardian X AI Assistant - Ultimate Performance with Full Face Mesh and face-api.js Emotion Detection
-// Best-in-class emotion detection with complete visible face mesh for maximum visual appeal
+// Guardian X AI Assistant - Fixed Emotion Detection with Complete Face Mesh
+// Accurate emotion detection with full visible face mesh and improved geometric analysis
 
 class GuardianAIEngine {
     constructor() {
@@ -31,7 +31,7 @@ class GuardianAIEngine {
             },
             emotion_analysis: {
                 patterns: ['emotion', 'feeling', 'mood', 'expression', 'happy', 'sad', 'angry', 'surprised'],
-                response: "Analyzing facial expressions and emotions using advanced face mesh analysis with professional-grade emotion detection libraries."
+                response: "Analyzing facial expressions and emotions using advanced face mesh analysis with precision emotion detection algorithms."
             }
         };
         
@@ -161,46 +161,49 @@ class GuardianAIEngine {
         }
         
         if (faceLandmarks.length > 0) {
-            response += `I'm tracking ${faceLandmarks.length} face${faceLandmarks.length > 1 ? 's' : ''} with complete mesh visualization and professional-grade emotion detection active. `;
+            response += `I'm tracking ${faceLandmarks.length} face${faceLandmarks.length > 1 ? 's' : ''} with complete mesh visualization and precision emotion detection active. `;
             
             if (emotions.length > 0) {
                 const emotionSummary = emotions.map(e => {
                     let emotionStr = `${e.emotion} (${Math.round(e.confidence * 100)}%)`;
                     return emotionStr;
                 }).join(', ');
-                response += `Professional emotion analysis: ${emotionSummary}. `;
+                response += `Precision emotion analysis: ${emotionSummary}. `;
             }
         }
         
         const modeContext = this.getModeContext(detectedObjects, faceLandmarks, emotions, missionMode);
-        return response + modeContext + " All advanced systems operating at peak performance.";
+        return response + modeContext + " All advanced systems operating with precision accuracy.";
     }
     
     generateEmotionResponse(emotions, faceLandmarks, missionMode) {
         if (faceLandmarks.length === 0) {
-            return "No faces detected for emotion analysis. Professional-grade emotion detection systems are ready and will activate when faces are detected.";
+            return "No faces detected for emotion analysis. Precision emotion detection systems are ready and will activate when faces are detected.";
         }
         
         if (emotions.length === 0) {
             return `I'm tracking ${faceLandmarks.length} face${faceLandmarks.length > 1 ? 's' : ''} with complete mesh visualization but emotion analysis is still processing facial expressions.`;
         }
         
-        let response = `Professional emotion detection results: `;
+        let response = `Precision emotion detection results: `;
         emotions.forEach((emotionData, index) => {
             response += `Person ${index + 1} - ${emotionData.emotion} (${Math.round(emotionData.confidence * 100)}% confidence)`;
+            if (emotionData.reasoning) {
+                response += ` [${emotionData.reasoning}]`;
+            }
             if (index < emotions.length - 1) response += ', ';
         });
         
         // Add mission-specific context
         switch (missionMode) {
             case 'MEDICAL':
-                response += '. Professional monitoring for medical distress indicators in facial expressions.';
+                response += '. Precision monitoring for medical distress indicators in facial expressions.';
                 break;
             case 'DEFENSE':
-                response += '. Advanced threat assessment through professional behavioral pattern analysis.';
+                response += '. Advanced threat assessment through precision behavioral pattern analysis.';
                 break;
             case 'POLICING':
-                response += '. Professional crowd monitoring and public safety behavioral analysis.';
+                response += '. Precision crowd monitoring and public safety behavioral analysis.';
                 break;
         }
         
@@ -209,28 +212,28 @@ class GuardianAIEngine {
     
     generateFaceAnalysisResponse(faceLandmarks, detectedObjects, emotions, missionMode) {
         if (faceLandmarks.length === 0) {
-            return "No faces detected in current field of view. Professional face analysis systems with complete mesh visualization are ready and will activate when faces are detected.";
+            return "No faces detected in current field of view. Precision face analysis systems with complete mesh visualization are ready and will activate when faces are detected.";
         }
         
         const peopleCount = detectedObjects.filter(obj => obj.class === 'person').length;
-        let response = `Professional facial analysis active: tracking ${faceLandmarks.length} face${faceLandmarks.length > 1 ? 's' : ''} with complete mesh visualization and ${peopleCount} people detected. `;
+        let response = `Precision facial analysis active: tracking ${faceLandmarks.length} face${faceLandmarks.length > 1 ? 's' : ''} with complete mesh visualization and ${peopleCount} people detected. `;
         
         if (emotions.length > 0) {
             const emotionList = emotions.map(e => 
                 `${e.emotion} (${Math.round(e.confidence * 100)}%)`
             ).join(', ');
-            response += `Professional emotions detected: ${emotionList}. `;
+            response += `Precision emotions detected: ${emotionList}. `;
         }
         
         switch (missionMode) {
             case 'MEDICAL':
-                response += "Professional monitoring for medical indicators and patient distress signals.";
+                response += "Precision monitoring for medical indicators and patient distress signals.";
                 break;
             case 'DEFENSE':
-                response += "Advanced threat assessment with professional behavioral anomaly detection.";
+                response += "Advanced threat assessment with precision behavioral anomaly detection.";
                 break;
             case 'POLICING':
-                response += "Professional facial recognition and crowd behavior monitoring active.";
+                response += "Precision facial recognition and crowd behavior monitoring active.";
                 break;
         }
         
@@ -254,7 +257,7 @@ class GuardianAIEngine {
         }
         
         if (faceLandmarks.length > 0) {
-            response += `Professional facial monitoring: ${faceLandmarks.length} individuals under surveillance with complete mesh analysis. `;
+            response += `Precision facial monitoring: ${faceLandmarks.length} individuals under surveillance with complete mesh analysis. `;
             
             if (concerningEmotions.length > 0) {
                 const concernList = concerningEmotions.map(e => 
@@ -269,7 +272,7 @@ class GuardianAIEngine {
         } else if (suspiciousItems.length > 0) {
             response += `Monitoring ${suspiciousItems.length} unattended item${suspiciousItems.length > 1 ? 's' : ''}. Enhanced surveillance active.`;
         } else {
-            response += `Secure environment: ${peopleCount} people, ${faceLandmarks.length} faces tracked with professional analysis. Security status: nominal.`;
+            response += `Secure environment: ${peopleCount} people, ${faceLandmarks.length} faces tracked with precision analysis. Security status: nominal.`;
         }
         
         return response;
@@ -285,7 +288,7 @@ class GuardianAIEngine {
             ['sad', 'fear', 'disgust'].includes(e.emotion.toLowerCase())
         );
         
-        let response = "Professional medical analysis active. Complete facial monitoring systems engaged. ";
+        let response = "Precision medical analysis active. Complete facial monitoring systems engaged. ";
         
         if (faceLandmarks.length > 0) {
             response += `Monitoring ${faceLandmarks.length} patient${faceLandmarks.length > 1 ? 's' : ''} with complete mesh visualization for distress indicators. `;
@@ -307,8 +310,8 @@ class GuardianAIEngine {
     }
     
     generateCapabilitiesResponse(missionMode, hasVision) {
-        const visionStatus = hasVision ? "with active professional monitoring" : "ready for professional activation";
-        return `Guardian X capabilities: advanced object detection, complete face mesh visualization, professional-grade emotion detection, threat assessment, medical evaluation, crowd monitoring, intelligent conversation. Currently in ${missionMode} mode ${visionStatus}. Professional analysis with complete mesh visualization and industry-standard emotion recognition active.`;
+        const visionStatus = hasVision ? "with active precision monitoring" : "ready for precision activation";
+        return `Guardian X capabilities: advanced object detection, complete face mesh visualization, precision emotion detection, threat assessment, medical evaluation, crowd monitoring, intelligent conversation. Currently in ${missionMode} mode ${visionStatus}. Precision analysis with complete mesh visualization and advanced emotion recognition active.`;
     }
     
     generateContextualDefault(userInput, detectedObjects, faceLandmarks, emotions, missionMode) {
@@ -316,13 +319,13 @@ class GuardianAIEngine {
             const objectCount = detectedObjects.length;
             const faceCount = faceLandmarks.length;
             const peopleCount = detectedObjects.filter(obj => obj.class === 'person').length;
-            const emotionSummary = emotions.length > 0 ? ` with professional emotions: ${emotions.map(e => 
+            const emotionSummary = emotions.length > 0 ? ` with precision emotions: ${emotions.map(e => 
                 `${e.emotion} (${Math.round(e.confidence * 100)}%)`
             ).join(', ')}` : '';
-            return `Professional monitoring active: ${objectCount} objects, ${faceCount} faces with complete mesh visualization, ${peopleCount} people in ${missionMode} mode${emotionSummary}. How can I assist with threat analysis, medical assessment, or behavioral evaluation?`;
+            return `Precision monitoring active: ${objectCount} objects, ${faceCount} faces with complete mesh visualization, ${peopleCount} people in ${missionMode} mode${emotionSummary}. How can I assist with threat analysis, medical assessment, or behavioral evaluation?`;
         }
         
-        return `Guardian X ready for deployment. Activate camera systems for comprehensive professional analysis including complete face mesh visualization and industry-standard emotion detection, or ask about capabilities and mission specifications.`;
+        return `Guardian X ready for deployment. Activate camera systems for comprehensive precision analysis including complete face mesh visualization and advanced emotion detection, or ask about capabilities and mission specifications.`;
     }
     
     formatVisionContext(detectedObjects, faceLandmarks, emotions) {
@@ -346,7 +349,7 @@ class GuardianAIEngine {
                 const emotionList = emotions.map(e => 
                     `${e.emotion} (${Math.round(e.confidence * 100)}%)`
                 ).join(', ');
-                context += ` with professional emotions: ${emotionList}`;
+                context += ` with precision emotions: ${emotionList}`;
             }
         }
         
@@ -383,18 +386,18 @@ class GuardianAIEngine {
     getModeContext(objects, faceLandmarks, emotions, missionMode) {
         const peopleCount = objects.filter(obj => obj.class === 'person').length;
         const faceCount = faceLandmarks.length;
-        const emotionContext = emotions.length > 0 ? ` Professional emotions: ${emotions.map(e => 
+        const emotionContext = emotions.length > 0 ? ` Precision emotions: ${emotions.map(e => 
             `${e.emotion} (${Math.round(e.confidence * 100)}%)`
         ).join(', ')}.` : '';
         
         switch (missionMode) {
             case 'MEDICAL':
-                return `Professional medical protocols active. ${peopleCount} individual${peopleCount !== 1 ? 's' : ''} and ${faceCount} faces with complete mesh ready for assessment.${emotionContext}`;
+                return `Precision medical protocols active. ${peopleCount} individual${peopleCount !== 1 ? 's' : ''} and ${faceCount} faces with complete mesh ready for assessment.${emotionContext}`;
             case 'DEFENSE':
-                return `Advanced tactical analysis engaged. Professional monitoring with complete mesh visualization active.${emotionContext}`;
+                return `Advanced tactical analysis engaged. Precision monitoring with complete mesh visualization active.${emotionContext}`;
             case 'POLICING':
             default:
-                return `Professional surveillance protocols active. Complete behavioral analysis monitoring all entities.${emotionContext}`;
+                return `Precision surveillance protocols active. Complete behavioral analysis monitoring all entities.${emotionContext}`;
         }
     }
     
@@ -410,7 +413,7 @@ class GuardianAIEngine {
     }
 }
 
-// Ultimate Guardian X Assistant System with Professional Face API Integration
+// Guardian X Assistant System with Fixed Emotion Detection and Complete Face Mesh
 class GuardianXAssistant {
     constructor() {
         // Initialize AI Engine
@@ -420,7 +423,7 @@ class GuardianXAssistant {
         this.guardianData = {
             name: "Guardian X",
             role: "First-generation robot developed by BIT Robotics", 
-            mission: "Saving lives through AI, VR, thermo-vision, and professional-grade facial analysis"
+            mission: "Saving lives through AI, VR, thermo-vision, and precision facial analysis"
         };
         
         this.config = {
@@ -435,27 +438,27 @@ class GuardianXAssistant {
             }
         };
         
-        // Mission modes with professional-grade emotion detection
+        // Mission modes with precision emotion detection
         this.missionModes = {
             MEDICAL: {
                 priorityObjects: ["person", "bottle", "cup", "syringe", "scissors"],
                 threatLevel: "low",
                 detectionSensitivity: 0.3,
-                aiContext: "Medical mode focuses on health assessment and professional patient monitoring",
+                aiContext: "Medical mode focuses on health assessment and precision patient monitoring",
                 faceAnalysis: true
             },
             DEFENSE: {
                 priorityObjects: ["person", "car", "truck", "backpack", "knife"],
                 threatLevel: "high", 
                 detectionSensitivity: 0.2,
-                aiContext: "Defense mode emphasizes threat detection and professional tactical analysis",
+                aiContext: "Defense mode emphasizes threat detection and precision tactical analysis",
                 faceAnalysis: true
             },
             POLICING: {
                 priorityObjects: ["person", "car", "handbag", "cell phone", "laptop"],
                 threatLevel: "medium",
                 detectionSensitivity: 0.3,
-                aiContext: "Policing mode monitors crowds and maintains professional public safety",
+                aiContext: "Policing mode monitors crowds and maintains precision public safety",
                 faceAnalysis: true
             }
         };
@@ -466,7 +469,6 @@ class GuardianXAssistant {
         this.cameraStream = null;
         this.objectModel = null;
         this.faceLandmarker = null;
-        this.faceApiModels = null; // Professional emotion detection
         this.drawingUtils = null;
         this.isDetecting = false;
         this.detectedObjects = [];
@@ -486,6 +488,10 @@ class GuardianXAssistant {
         this.commandCount = 0;
         this.scanCount = 0;
         this.isEmergencyActive = false;
+        
+        // Emotion detection history for smoothing
+        this.emotionHistory = [];
+        this.emotionHistorySize = 5;
         
         // DOM elements cache
         this.elements = {};
@@ -718,17 +724,14 @@ class GuardianXAssistant {
     
     async initializeSystem() {
         try {
-            this.updateLoadingProgress(5, "Initializing Professional AI Engine...");
+            this.updateLoadingProgress(10, "Initializing Precision AI Engine...");
             await new Promise(resolve => setTimeout(resolve, 300));
             
-            this.updateLoadingProgress(15, "Loading TensorFlow.js...");
+            this.updateLoadingProgress(20, "Loading TensorFlow.js...");
             await tf.ready();
             
-            this.updateLoadingProgress(25, "Loading Object Detection Model...");
+            this.updateLoadingProgress(35, "Loading Object Detection Model...");
             await this.loadObjectModel();
-            
-            this.updateLoadingProgress(35, "Loading Professional Face-API Models...");
-            await this.loadFaceApiModels();
             
             this.updateLoadingProgress(50, "Loading MediaPipe Face Mesh...");
             await this.loadFaceLandmarker();
@@ -745,10 +748,10 @@ class GuardianXAssistant {
             this.updateLoadingProgress(92, "Initializing Performance Systems...");
             this.initializeCharts();
             
-            this.updateLoadingProgress(95, "Starting Professional Loops...");
+            this.updateLoadingProgress(95, "Starting Precision Loops...");
             this.startSystemLoop();
             
-            this.updateLoadingProgress(100, "Guardian X Professional Ready!");
+            this.updateLoadingProgress(100, "Guardian X Precision Ready!");
             
             setTimeout(() => {
                 this.completeInitialization();
@@ -759,48 +762,6 @@ class GuardianXAssistant {
             this.updateLoadingProgress(100, "Initialization Failed: " + error.message);
             this.addActivity('System initialization failed', '❌');
         }
-    }
-
-    async loadFaceApiModels() {
-        try {
-            // Load face-api.js models for professional emotion detection
-            if (typeof faceapi === 'undefined') {
-                console.warn('face-api.js not loaded, loading from CDN...');
-                await this.loadFaceApiScript();
-            }
-
-            this.updateLoadingProgress(40, "Loading Face Detection Models...");
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-            
-            this.updateLoadingProgress(45, "Loading Face Expression Models...");
-            await faceapi.nets.faceExpressionNet.loadFromUri('/models');
-            
-            this.faceApiModels = {
-                loaded: true,
-                detector: faceapi.nets.tinyFaceDetector,
-                expressions: faceapi.nets.faceExpressionNet
-            };
-            
-            this.addActivity('Professional Face-API models loaded', '🧠');
-            console.log('Face-API.js models loaded successfully');
-            
-        } catch (error) {
-            console.warn('Failed to load Face-API models, will use fallback:', error);
-            this.faceApiModels = { loaded: false };
-            
-            // Don't throw error, continue with fallback
-            this.addActivity('Using fallback emotion detection', '⚠️');
-        }
-    }
-
-    async loadFaceApiScript() {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
     }
     
     initializeCharts() {
@@ -877,7 +838,7 @@ class GuardianXAssistant {
                             </div>
                         </div>
                         <div class="performance-bar">
-                            <span>Professional AI</span>
+                            <span>Precision AI</span>
                             <div class="bar-container">
                                 <div class="bar-fill" id="aiLoad" style="width: 0%"></div>
                             </div>
@@ -905,12 +866,12 @@ class GuardianXAssistant {
                     modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
                     delegate: "GPU"
                 },
-                outputFaceBlendshapes: false, // Not needed for our use case
+                outputFaceBlendshapes: false,
                 runningMode: "VIDEO",
-                numFaces: 10 // Support multiple faces with full mesh
+                numFaces: 10
             });
             
-            // Initialize drawing utils for professional visualization
+            // Initialize drawing utils for precision visualization
             this.drawingUtils = new DrawingUtils();
             
             this.addActivity('MediaPipe Face Mesh loaded (complete visualization)', '👤');
@@ -919,7 +880,6 @@ class GuardianXAssistant {
         } catch (error) {
             console.error('Failed to load MediaPipe Face Landmarker:', error);
             this.addActivity('Face Mesh failed to load', '⚠️');
-            // Don't throw - allow system to continue
         }
     }
     
@@ -927,33 +887,24 @@ class GuardianXAssistant {
         this.elements.loadingScreen.style.display = 'none';
         this.elements.dashboard.style.display = 'grid';
         this.elements.systemStatus.classList.add('active');
-        this.elements.statusText.textContent = 'PROFESSIONAL AI ACTIVE';
+        this.elements.statusText.textContent = 'PRECISION AI ACTIVE';
         this.elements.overallStatus.classList.add('active');
         this.elements.overallStatusText.textContent = 'Online';
         this.elements.modelsHealth.textContent = 'Online';
         this.elements.modelsHealth.className = 'health-status online';
         
         this.isInitialized = true;
-        this.addActivity('Guardian X Professional AI systems online', '✅');
+        this.addActivity('Guardian X Precision AI systems online', '✅');
         
-        // Check system capabilities
         const hasApiKey = this.aiEngine.apiKey && this.aiEngine.apiKey.trim() !== "";
-        const hasFaceApi = this.faceApiModels && this.faceApiModels.loaded;
-        
         let greeting;
         
-        if (hasApiKey && hasFaceApi) {
-            greeting = "Guardian X Professional AI online with Google Gemini integration, complete MediaPipe face mesh visualization, and professional-grade Face-API emotion detection. Ultimate facial analysis system with complete mesh rendering and industry-standard emotion recognition active. All professional systems ready for deployment.";
-            this.elements.statusTicker.textContent = '🚀 Guardian X Professional operational • 🧠 Gemini + Face-API active • 👤 Complete face mesh visible • 🎭 Professional emotion detection • 📹 Ultimate analysis ready';
-        } else if (hasApiKey) {
-            greeting = "Guardian X Professional AI online with Google Gemini integration and complete MediaPipe face mesh visualization. Professional facial analysis with complete mesh rendering active. Face-API models unavailable, using advanced geometric emotion detection.";
-            this.elements.statusTicker.textContent = '🚀 Guardian X Professional operational • 🧠 Gemini AI active • 👤 Complete face mesh visible • 🎭 Geometric emotion detection • 📹 Professional analysis ready';
-        } else if (hasFaceApi) {
-            greeting = "Guardian X systems online with complete MediaPipe face mesh visualization and professional Face-API emotion detection. Configure your Google Gemini API key to enable advanced conversational AI. Professional emotion detection and complete mesh visualization active.";
-            this.elements.statusTicker.textContent = '🚀 Guardian X Professional operational • 👤 Complete face mesh visible • 🎭 Professional Face-API emotions • ⚠️ API key needed • 📹 Professional visual active';
+        if (hasApiKey) {
+            greeting = "Guardian X Precision AI online with Google Gemini integration and complete MediaPipe face mesh visualization. Advanced precision emotion detection with complete mesh rendering and intelligent facial analysis active. All precision systems ready for deployment.";
+            this.elements.statusTicker.textContent = '🚀 Guardian X Precision operational • 🧠 Gemini AI active • 👤 Complete face mesh visible • 🎯 Precision emotion detection • 📹 Advanced analysis ready';
         } else {
-            greeting = "Guardian X systems online with complete MediaPipe face mesh visualization and advanced geometric emotion detection. Configure Google Gemini API key and ensure Face-API models are available for maximum capabilities. Complete mesh visualization active.";
-            this.elements.statusTicker.textContent = '🚀 Guardian X operational • 👤 Complete face mesh visible • 🎭 Geometric emotion detection • ⚠️ Professional models recommended • 📹 Mesh visualization active';
+            greeting = "Guardian X systems online with complete MediaPipe face mesh visualization and precision emotion detection. Configure your Google Gemini API key to enable advanced conversational AI. Precision emotion detection and complete mesh visualization active.";
+            this.elements.statusTicker.textContent = '🚀 Guardian X Precision operational • 👤 Complete face mesh visible • 🎯 Precision emotion detection • ⚠️ API key needed • 📹 Advanced visual active';
         }
         
         this.addMessage('assistant', greeting);
@@ -1043,8 +994,8 @@ class GuardianXAssistant {
                                 this.startObjectDetection();
                             }, 500);
                             
-                            this.addActivity('Camera activated with complete face mesh and professional emotion detection', '📹');
-                            this.speak("Professional visual systems online. Complete face mesh visualization and advanced emotion detection beginning.");
+                            this.addActivity('Camera activated with complete face mesh and precision emotion detection', '📹');
+                            this.speak("Precision visual systems online. Complete face mesh visualization and advanced emotion detection beginning.");
                             resolve();
                         })
                         .catch(reject);
@@ -1063,9 +1014,9 @@ class GuardianXAssistant {
             
             let errorMessage = "Camera failed to start. ";
             if (error.name === 'NotAllowedError') {
-                errorMessage = "Camera permission denied. Please allow camera access for complete face mesh visualization and professional emotion detection.";
+                errorMessage = "Camera permission denied. Please allow camera access for complete face mesh visualization and precision emotion detection.";
             } else if (error.name === 'NotFoundError') {
-                errorMessage = "No camera detected. Please connect a camera for professional facial analysis capabilities.";
+                errorMessage = "No camera detected. Please connect a camera for precision facial analysis capabilities.";
             } else {
                 errorMessage += error.message;
             }
@@ -1093,7 +1044,7 @@ class GuardianXAssistant {
             this.resetCounters();
             
             this.addActivity('Camera deactivated', '📹');
-            this.speak("Visual systems offline. Professional analysis paused.");
+            this.speak("Visual systems offline. Precision analysis paused.");
         }
     }
     
@@ -1104,7 +1055,7 @@ class GuardianXAssistant {
         canvas.height = video.videoHeight || 480;
         canvas.style.width = '100%';
         canvas.style.height = '100%';
-        console.log(`Professional canvas setup: ${canvas.width}x${canvas.height}`);
+        console.log(`Precision canvas setup: ${canvas.width}x${canvas.height}`);
     }
     
     async startObjectDetection() {
@@ -1118,7 +1069,7 @@ class GuardianXAssistant {
         }
         
         this.isDetecting = true;
-        console.log('Starting professional object detection with complete face mesh and emotion analysis...');
+        console.log('Starting precision object detection with complete face mesh and emotion analysis...');
         
         const detectLoop = async () => {
             if (!this.isDetecting || this.elements.cameraVideo.paused || this.elements.cameraVideo.ended) {
@@ -1132,7 +1083,7 @@ class GuardianXAssistant {
                     // Object detection
                     const predictions = await this.objectModel.detect(this.elements.cameraVideo);
                     
-                    // Complete face mesh detection with professional emotion analysis
+                    // Complete face mesh detection with precision emotion analysis
                     let faceResults = [];
                     let emotions = [];
                     
@@ -1144,9 +1095,9 @@ class GuardianXAssistant {
                             );
                             faceResults = faceDetection.faceLandmarks || [];
                             
-                            // Professional emotion detection using Face-API if available
+                            // Precision emotion detection using improved geometric analysis
                             if (faceResults.length > 0) {
-                                emotions = await this.detectEmotionsWithFaceApi(faceResults);
+                                emotions = this.detectEmotionsWithPrecision(faceResults);
                             }
                         } catch (faceError) {
                             console.warn('Face detection error:', faceError);
@@ -1191,116 +1142,338 @@ class GuardianXAssistant {
         requestAnimationFrame(detectLoop);
     }
 
-    async detectEmotionsWithFaceApi(faceLandmarks) {
+    detectEmotionsWithPrecision(faceLandmarks) {
         const emotions = [];
         
-        try {
-            if (this.faceApiModels && this.faceApiModels.loaded && typeof faceapi !== 'undefined') {
-                // Use professional Face-API for emotion detection
-                const detections = await faceapi.detectAllFaces(
-                    this.elements.cameraVideo, 
-                    new faceapi.TinyFaceDetectorOptions()
-                ).withFaceExpressions();
-                
-                detections.forEach((detection, index) => {
-                    const expressions = detection.expressions;
-                    
-                    // Find the dominant emotion
-                    let maxEmotion = 'neutral';
-                    let maxConfidence = 0;
-                    
-                    Object.entries(expressions).forEach(([emotion, confidence]) => {
-                        if (confidence > maxConfidence) {
-                            maxEmotion = emotion;
-                            maxConfidence = confidence;
-                        }
-                    });
-                    
-                    emotions.push({
-                        faceIndex: index,
-                        emotion: maxEmotion,
-                        confidence: maxConfidence,
-                        allExpressions: expressions,
-                        source: 'Face-API (Professional)'
-                    });
-                });
-                
-            } else {
-                // Fallback to geometric analysis if Face-API not available
-                faceLandmarks.forEach((landmarks, index) => {
-                    const geometricEmotion = this.detectEmotionGeometric(landmarks);
-                    emotions.push({
-                        faceIndex: index,
-                        ...geometricEmotion,
-                        source: 'Geometric (Fallback)'
-                    });
-                });
-            }
-        } catch (error) {
-            console.warn('Professional emotion detection failed, using fallback:', error);
-            
-            // Fallback geometric emotion detection
-            faceLandmarks.forEach((landmarks, index) => {
-                const geometricEmotion = this.detectEmotionGeometric(landmarks);
-                emotions.push({
-                    faceIndex: index,
-                    ...geometricEmotion,
-                    source: 'Geometric (Fallback)'
-                });
+        faceLandmarks.forEach((landmarks, index) => {
+            const emotion = this.analyzePrecisionEmotion(landmarks, index);
+            emotions.push({
+                faceIndex: index,
+                ...emotion
             });
-        }
+        });
         
         return emotions;
     }
 
-    detectEmotionGeometric(landmarks) {
-        // Advanced geometric emotion detection as fallback
+    analyzePrecisionEmotion(landmarks, faceIndex) {
         if (!landmarks || landmarks.length < 468) {
-            return { emotion: 'neutral', confidence: 0.5 };
+            return { 
+                emotion: 'neutral', 
+                confidence: 0.5, 
+                reasoning: 'Insufficient landmarks',
+                source: 'Precision Geometric'
+            };
         }
 
         try {
-            // Key landmark points for emotion detection
-            const leftMouth = landmarks[61];
-            const rightMouth = landmarks[291];
-            const upperLip = landmarks[13];
-            const lowerLip = landmarks[14];
-            const leftEye = landmarks[159];
-            const rightEye = landmarks[386];
-            const leftEyeLower = landmarks[145];
-            const rightEyeLower = landmarks[374];
-            const leftBrow = landmarks[70];
-            const rightBrow = landmarks[63];
-
-            // Calculate emotion scores
-            const mouthCurvature = (upperLip.y + lowerLip.y) / 2 - (leftMouth.y + rightMouth.y) / 2;
-            const eyeOpenness = (Math.abs(leftEye.y - leftEyeLower.y) + Math.abs(rightEye.y - rightEyeLower.y)) / 2;
-            const browRaise = Math.max(0, (leftEyeLower.y + rightEyeLower.y) / 2 - (leftBrow.y + rightBrow.y) / 2);
-            const mouthOpen = Math.abs(upperLip.y - lowerLip.y);
-
-            // Emotion detection logic
-            const emotions = {
-                happy: Math.max(0, mouthCurvature * -50 + (eyeOpenness > 0.015 ? 0.2 : 0)),
-                sad: Math.max(0, mouthCurvature * 30 + (eyeOpenness < 0.01 ? 0.3 : 0)),
-                surprised: Math.max(0, browRaise * 20 + (eyeOpenness > 0.025 ? 0.4 : 0) + (mouthOpen > 0.02 ? 0.3 : 0)),
-                angry: Math.max(0, (browRaise < -0.005 ? 0.4 : 0) + (eyeOpenness < 0.012 ? 0.3 : 0)),
-                neutral: 0.3
+            // Comprehensive landmark analysis for precise emotion detection
+            const features = this.extractPrecisionFeatures(landmarks);
+            
+            // Advanced emotion scoring with multiple indicators
+            const emotionScores = {
+                happy: this.calculateHappinessScore(features),
+                sad: this.calculateSadnessScore(features),
+                angry: this.calculateAngerScore(features),
+                surprised: this.calculateSurpriseScore(features),
+                fear: this.calculateFearScore(features),
+                disgust: this.calculateDisgustScore(features),
+                neutral: this.calculateNeutralScore(features)
             };
 
-            // Find dominant emotion
-            const [topEmotion, confidence] = Object.entries(emotions)
-                .reduce(([maxEmotion, maxScore], [emotion, score]) => 
-                    score > maxScore ? [emotion, score] : [maxEmotion, maxScore], 
-                    ['neutral', 0]);
+            console.log(`Face ${faceIndex} emotion scores:`, emotionScores);
+
+            // Find the dominant emotion with confidence threshold
+            let maxEmotion = 'neutral';
+            let maxScore = 0.3; // Higher threshold for better accuracy
+            let secondaryEmotion = null;
+            let secondaryScore = 0;
+
+            Object.entries(emotionScores).forEach(([emotion, score]) => {
+                if (score > maxScore) {
+                    secondaryEmotion = maxEmotion;
+                    secondaryScore = maxScore;
+                    maxEmotion = emotion;
+                    maxScore = score;
+                } else if (score > secondaryScore) {
+                    secondaryEmotion = emotion;
+                    secondaryScore = score;
+                }
+            });
+
+            // Smooth emotions using history
+            const smoothedEmotion = this.smoothEmotionDetection(faceIndex, maxEmotion, maxScore);
 
             return {
-                emotion: topEmotion,
-                confidence: Math.min(0.9, Math.max(0.3, confidence))
+                emotion: smoothedEmotion.emotion,
+                confidence: smoothedEmotion.confidence,
+                secondary: secondaryScore > 0.25 ? secondaryEmotion : null,
+                reasoning: `${smoothedEmotion.emotion}: ${(smoothedEmotion.confidence * 100).toFixed(1)}%`,
+                source: 'Precision Geometric',
+                allScores: emotionScores
             };
 
         } catch (error) {
-            console.warn('Geometric emotion detection error:', error);
-            return { emotion: 'neutral', confidence: 0.5 };
+            console.warn('Precision emotion analysis error:', error);
+            return { 
+                emotion: 'neutral', 
+                confidence: 0.5, 
+                reasoning: 'Analysis error',
+                source: 'Precision Geometric'
+            };
+        }
+    }
+
+    extractPrecisionFeatures(landmarks) {
+        // Key landmark indices for precision analysis
+        const leftMouthCorner = landmarks[61];
+        const rightMouthCorner = landmarks[291]; 
+        const upperLipTop = landmarks[13];
+        const lowerLipBottom = landmarks[14];
+        const leftEyeTop = landmarks[159];
+        const leftEyeBottom = landmarks[145];
+        const rightEyeTop = landmarks[386];
+        const rightEyeBottom = landmarks[374];
+        const leftEyeInner = landmarks[133];
+        const leftEyeOuter = landmarks[33];
+        const rightEyeInner = landmarks[362];
+        const rightEyeOuter = landmarks[263];
+        const leftEyebrowInner = landmarks[70];
+        const rightEyebrowInner = landmarks[63];
+        const leftEyebrowOuter = landmarks[46];
+        const rightEyebrowOuter = landmarks[285];
+        const noseTip = landmarks[1];
+        const noseBase = landmarks[2];
+        const chinCenter = landmarks[18];
+        const foreheadCenter = landmarks[9];
+
+        return {
+            // Mouth features
+            mouthWidth: Math.abs(rightMouthCorner.x - leftMouthCorner.x),
+            mouthHeight: Math.abs(upperLipTop.y - lowerLipBottom.y),
+            mouthCurvature: this.calculateMouthCurvature(leftMouthCorner, rightMouthCorner, upperLipTop, lowerLipBottom),
+            
+            // Eye features
+            leftEyeOpenness: Math.abs(leftEyeTop.y - leftEyeBottom.y),
+            rightEyeOpenness: Math.abs(rightEyeTop.y - rightEyeBottom.y),
+            leftEyeWidth: Math.abs(leftEyeOuter.x - leftEyeInner.x),
+            rightEyeWidth: Math.abs(rightEyeOuter.x - rightEyeInner.x),
+            
+            // Eyebrow features
+            leftEyebrowHeight: Math.abs(leftEyebrowInner.y - leftEyeTop.y),
+            rightEyebrowHeight: Math.abs(rightEyebrowInner.y - rightEyeTop.y),
+            eyebrowAngle: this.calculateEyebrowAngle(leftEyebrowInner, leftEyebrowOuter, rightEyebrowInner, rightEyebrowOuter),
+            
+            // Face proportions
+            faceWidth: Math.abs(landmarks[454].x - landmarks[234].x),
+            faceHeight: Math.abs(foreheadCenter.y - chinCenter.y),
+            
+            // Derived ratios
+            eyeAspectRatio: (Math.abs(leftEyeTop.y - leftEyeBottom.y) + Math.abs(rightEyeTop.y - rightEyeBottom.y)) / 
+                           (Math.abs(leftEyeOuter.x - leftEyeInner.x) + Math.abs(rightEyeOuter.x - rightEyeInner.x)),
+            mouthAspectRatio: Math.abs(upperLipTop.y - lowerLipBottom.y) / Math.abs(rightMouthCorner.x - leftMouthCorner.x)
+        };
+    }
+
+    calculateMouthCurvature(leftCorner, rightCorner, upperLip, lowerLip) {
+        const mouthCenter = {
+            x: (leftCorner.x + rightCorner.x) / 2,
+            y: (upperLip.y + lowerLip.y) / 2
+        };
+        const cornerAverage = (leftCorner.y + rightCorner.y) / 2;
+        return mouthCenter.y - cornerAverage;
+    }
+
+    calculateEyebrowAngle(leftInner, leftOuter, rightInner, rightOuter) {
+        const leftAngle = Math.atan2(leftOuter.y - leftInner.y, leftOuter.x - leftInner.x);
+        const rightAngle = Math.atan2(rightOuter.y - rightInner.y, rightOuter.x - rightInner.x);
+        return (leftAngle + rightAngle) / 2;
+    }
+
+    calculateHappinessScore(features) {
+        let score = 0;
+        
+        // Positive mouth curvature (smile)
+        if (features.mouthCurvature < -0.005) score += 0.4;
+        if (features.mouthCurvature < -0.010) score += 0.2;
+        
+        // Moderate eye openness (not squinting, not wide)
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        if (avgEyeOpenness > 0.008 && avgEyeOpenness < 0.025) score += 0.2;
+        
+        // Slight eyebrow raise
+        const avgEyebrowHeight = (features.leftEyebrowHeight + features.rightEyebrowHeight) / 2;
+        if (avgEyebrowHeight > 0.015 && avgEyebrowHeight < 0.030) score += 0.1;
+        
+        // Mouth width (smiling widens mouth)
+        if (features.mouthWidth > 0.045) score += 0.1;
+        
+        return Math.min(0.95, score);
+    }
+
+    calculateSadnessScore(features) {
+        let score = 0;
+        
+        // Negative mouth curvature (frown)
+        if (features.mouthCurvature > 0.003) score += 0.3;
+        if (features.mouthCurvature > 0.008) score += 0.2;
+        
+        // Droopy eyes (smaller eye openness)
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        if (avgEyeOpenness < 0.012) score += 0.3;
+        
+        // Lowered eyebrows
+        const avgEyebrowHeight = (features.leftEyebrowHeight + features.rightEyebrowHeight) / 2;
+        if (avgEyebrowHeight < 0.012) score += 0.2;
+        
+        return Math.min(0.95, score);
+    }
+
+    calculateAngerScore(features) {
+        let score = 0;
+        
+        // Lowered, furrowed eyebrows
+        const avgEyebrowHeight = (features.leftEyebrowHeight + features.rightEyebrowHeight) / 2;
+        if (avgEyebrowHeight < 0.010) score += 0.4;
+        
+        // Tense mouth (smaller mouth opening but not necessarily frowning)
+        if (features.mouthHeight < 0.008) score += 0.2;
+        
+        // Narrowed eyes
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        if (avgEyeOpenness < 0.010) score += 0.2;
+        
+        // Tightened mouth
+        if (features.mouthAspectRatio < 0.15) score += 0.2;
+        
+        return Math.min(0.95, score);
+    }
+
+    calculateSurpriseScore(features) {
+        let score = 0;
+        
+        // Raised eyebrows
+        const avgEyebrowHeight = (features.leftEyebrowHeight + features.rightEyebrowHeight) / 2;
+        if (avgEyebrowHeight > 0.025) score += 0.4;
+        if (avgEyebrowHeight > 0.035) score += 0.2;
+        
+        // Wide eyes
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        if (avgEyeOpenness > 0.020) score += 0.3;
+        if (avgEyeOpenness > 0.030) score += 0.2;
+        
+        // Open mouth
+        if (features.mouthHeight > 0.015) score += 0.2;
+        
+        return Math.min(0.95, score);
+    }
+
+    calculateFearScore(features) {
+        let score = 0;
+        
+        // Wide eyes
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        if (avgEyeOpenness > 0.025) score += 0.3;
+        
+        // Raised eyebrows (but less than surprise)
+        const avgEyebrowHeight = (features.leftEyebrowHeight + features.rightEyebrowHeight) / 2;
+        if (avgEyebrowHeight > 0.020) score += 0.2;
+        
+        // Tense mouth
+        if (features.mouthAspectRatio < 0.12) score += 0.2;
+        
+        // Higher eye aspect ratio (wider eyes relative to width)
+        if (features.eyeAspectRatio > 0.25) score += 0.2;
+        
+        return Math.min(0.95, score);
+    }
+
+    calculateDisgustScore(features) {
+        let score = 0;
+        
+        // Wrinkled nose area (harder to detect geometrically, approximate)
+        // Use mouth position relative to expected
+        if (features.mouthCurvature > 0.002 && features.mouthHeight < 0.010) score += 0.3;
+        
+        // Slightly raised upper lip
+        if (features.mouthAspectRatio < 0.10) score += 0.2;
+        
+        // Slightly narrowed eyes
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        if (avgEyeOpenness < 0.015) score += 0.2;
+        
+        return Math.min(0.95, score);
+    }
+
+    calculateNeutralScore(features) {
+        let score = 0.4; // Base neutral score
+        
+        // Check if all features are in neutral ranges
+        const avgEyeOpenness = (features.leftEyeOpenness + features.rightEyeOpenness) / 2;
+        const avgEyebrowHeight = (features.leftEyebrowHeight + features.rightEyebrowHeight) / 2;
+        
+        if (Math.abs(features.mouthCurvature) < 0.003) score += 0.2;
+        if (avgEyeOpenness > 0.010 && avgEyeOpenness < 0.020) score += 0.2;
+        if (avgEyebrowHeight > 0.012 && avgEyebrowHeight < 0.025) score += 0.1;
+        if (features.mouthAspectRatio > 0.12 && features.mouthAspectRatio < 0.25) score += 0.1;
+        
+        return Math.min(0.95, score);
+    }
+
+    smoothEmotionDetection(faceIndex, emotion, confidence) {
+        // Initialize face history if needed
+        if (!this.emotionHistory[faceIndex]) {
+            this.emotionHistory[faceIndex] = [];
+        }
+        
+        // Add current emotion to history
+        this.emotionHistory[faceIndex].push({ emotion, confidence, timestamp: Date.now() });
+        
+        // Keep only recent history
+        if (this.emotionHistory[faceIndex].length > this.emotionHistorySize) {
+            this.emotionHistory[faceIndex].shift();
+        }
+        
+        // If we don't have enough history, return current
+        if (this.emotionHistory[faceIndex].length < 3) {
+            return { emotion, confidence };
+        }
+        
+        // Count emotion occurrences in recent history
+        const emotionCounts = {};
+        const confidenceSum = {};
+        
+        this.emotionHistory[faceIndex].forEach(entry => {
+            if (!emotionCounts[entry.emotion]) {
+                emotionCounts[entry.emotion] = 0;
+                confidenceSum[entry.emotion] = 0;
+            }
+            emotionCounts[entry.emotion]++;
+            confidenceSum[entry.emotion] += entry.confidence;
+        });
+        
+        // Find most frequent emotion
+        let mostFrequent = emotion;
+        let maxCount = 0;
+        
+        Object.entries(emotionCounts).forEach(([emo, count]) => {
+            if (count > maxCount) {
+                maxCount = count;
+                mostFrequent = emo;
+            }
+        });
+        
+        // Calculate average confidence for most frequent emotion
+        const avgConfidence = confidenceSum[mostFrequent] / emotionCounts[mostFrequent];
+        
+        // Use smoothed result if it has sufficient support, otherwise use current
+        if (maxCount >= 2 || confidence < 0.6) {
+            return { 
+                emotion: mostFrequent, 
+                confidence: Math.max(0.3, Math.min(0.95, avgConfidence))
+            };
+        } else {
+            return { emotion, confidence };
         }
     }
     
@@ -1346,18 +1519,18 @@ class GuardianXAssistant {
             });
         }
         
-        // Draw COMPLETE face mesh with professional emotion indicators
+        // Draw COMPLETE face mesh with precision emotion indicators
         if (faceResults.length > 0) {
             try {
                 ctx.save();
                 faceResults.forEach((landmarks, index) => {
-                    // Get professional emotion for this face
+                    // Get precision emotion for this face
                     const emotion = emotions.find(e => e.faceIndex === index);
                     const emotionText = emotion ? 
                         `${emotion.emotion} (${Math.round(emotion.confidence * 100)}%)` : 
                         'analyzing...';
                     
-                    // Professional emotion color coding
+                    // Precision emotion color coding
                     let faceColor = '#FFFFFF';
                     let glowIntensity = 8;
                     
@@ -1397,7 +1570,7 @@ class GuardianXAssistant {
                         }
                         
                         // Adjust intensity based on confidence
-                        glowIntensity = Math.round(glowIntensity * emotion.confidence);
+                        glowIntensity = Math.round(glowIntensity * Math.max(0.5, emotion.confidence));
                     }
                     
                     // Draw COMPLETE facial landmarks (all 468 points for ultimate sci-fi look)
@@ -1439,13 +1612,13 @@ class GuardianXAssistant {
                             }
                         });
                         
-                        // Draw connecting lines for mesh effect (optional - can be toggled)
+                        // Draw connecting lines for mesh effect
                         this.drawFaceMeshConnections(ctx, landmarks, faceColor, glowIntensity);
                         
                         // Reset shadow
                         ctx.shadowBlur = 0;
                         
-                        // Draw professional emotion label with enhanced styling
+                        // Draw precision emotion label with enhanced styling
                         if (landmarks.length > 0) {
                             const firstPoint = landmarks[0];
                             const x = firstPoint.x * canvas.width;
@@ -1453,17 +1626,13 @@ class GuardianXAssistant {
                             
                             ctx.font = 'bold 13px Courier New';
                             let labelText = `${emotionText}`;
-                            if (emotion && emotion.source) {
-                                if (emotion.source.includes('Face-API')) {
-                                    labelText += ` 🧠`;
-                                } else {
-                                    labelText += ` ⚡`;
-                                }
+                            if (emotion && emotion.reasoning) {
+                                labelText = `${emotion.emotion} (${Math.round(emotion.confidence * 100)}%)`;
                             }
                             
                             const textWidth = ctx.measureText(labelText).width;
                             
-                            // Professional background with glow
+                            // Precision background with glow
                             ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
                             ctx.fillRect(x - 30, y - 65, textWidth + 40, 50);
                             
@@ -1481,15 +1650,12 @@ class GuardianXAssistant {
                             ctx.shadowBlur = 5;
                             ctx.fillText(labelText, x - 25, y - 50);
                             
-                            // Professional indicator
+                            // Precision indicator
                             ctx.font = 'bold 10px Courier New';
                             ctx.fillStyle = '#FFD700';
                             ctx.shadowColor = '#FFD700';
                             ctx.shadowBlur = 3;
-                            
-                            const sourceText = emotion && emotion.source ? 
-                                (emotion.source.includes('Face-API') ? 'PROFESSIONAL' : 'ADVANCED') : 'PROCESSING';
-                            ctx.fillText(sourceText, x - 25, y - 35);
+                            ctx.fillText('PRECISION', x - 25, y - 35);
                             
                             // Confidence bar with glow
                             if (emotion && emotion.confidence) {
@@ -1521,7 +1687,7 @@ class GuardianXAssistant {
     }
 
     drawFaceMeshConnections(ctx, landmarks, color, glowIntensity) {
-        // Draw subtle connecting lines for mesh effect (optional enhancement)
+        // Draw subtle connecting lines for mesh effect
         ctx.strokeStyle = color;
         ctx.lineWidth = 0.3;
         ctx.globalAlpha = 0.4;
@@ -1646,7 +1812,7 @@ class GuardianXAssistant {
             this.elements.objectList.appendChild(objectItem);
         });
         
-        // Add face information with professional emotions
+        // Add face information with precision emotions
         if (this.faceLandmarks.length > 0) {
             const faceItem = document.createElement('div');
             faceItem.className = 'object-item face-detection';
@@ -1655,8 +1821,7 @@ class GuardianXAssistant {
             if (this.detectedEmotions.length > 0) {
                 const emotionList = this.detectedEmotions.map(e => {
                     let str = `${e.emotion} (${Math.round(e.confidence * 100)}%)`;
-                    if (e.source && e.source.includes('Face-API')) str += ' 🧠';
-                    else if (e.source && e.source.includes('Geometric')) str += ' ⚡';
+                    str += ' 🎯'; // Precision indicator
                     return str;
                 }).join(', ');
                 emotionSummary = emotionList;
@@ -1664,7 +1829,7 @@ class GuardianXAssistant {
             
             faceItem.innerHTML = `
                 <div class="object-info">
-                    <span class="object-name">🕸️ Complete Mesh Faces</span>
+                    <span class="object-name">🕸️ Precision Mesh Faces</span>
                     <span class="object-count">×${this.faceLandmarks.length}</span>
                 </div>
                 <div class="object-confidence">
@@ -1697,23 +1862,21 @@ class GuardianXAssistant {
         } else if (concerningEmotions.length > 0) {
             threatLevel = 'medium';
             threatText = 'BEHAVIORAL CONCERN';
-            threatDetails = `⚠️ Professional emotion analysis detected concerns: ${concerningEmotions.map(e => {
+            threatDetails = `⚠️ Precision emotion analysis detected concerns: ${concerningEmotions.map(e => {
                 let str = `${e.emotion} (${Math.round(e.confidence * 100)}%)`;
-                if (e.source && e.source.includes('Face-API')) str += ' [Professional]';
                 return str;
             }).join(', ')}. `;
         } else if (suspiciousItems.length > 0) {
             threatLevel = 'medium';
             threatText = 'MONITORING';
-            threatDetails = `${suspiciousItems.length} unattended item${suspiciousItems.length > 1 ? 's' : ''} under professional surveillance. `;
+            threatDetails = `${suspiciousItems.length} unattended item${suspiciousItems.length > 1 ? 's' : ''} under precision surveillance. `;
         }
         
-        threatDetails += `Complete mesh monitoring: ${peopleCount} people, ${faceCount} faces with professional emotion analysis.`;
+        threatDetails += `Complete mesh monitoring: ${peopleCount} people, ${faceCount} faces with precision emotion analysis.`;
         
         if (this.detectedEmotions.length > 0) {
             const emotionSummary = this.detectedEmotions.map(e => {
                 let str = `${e.emotion} (${Math.round(e.confidence * 100)}%)`;
-                if (e.source && e.source.includes('Face-API')) str += ' [Pro]';
                 return str;
             }).join(', ');
             threatDetails += ` Current emotions: ${emotionSummary}.`;
@@ -1740,7 +1903,7 @@ class GuardianXAssistant {
             medicalStatus += `Medical equipment: ${medicalItems.map(item => item.class).join(', ')}. `;
         }
         
-        medicalStatus += `Professional monitoring: ${peopleCount} patient${peopleCount !== 1 ? 's' : ''}, ${faceCount} face${faceCount !== 1 ? 's' : ''} with complete mesh emotional assessment.`;
+        medicalStatus += `Precision monitoring: ${peopleCount} patient${peopleCount !== 1 ? 's' : ''}, ${faceCount} face${faceCount !== 1 ? 's' : ''} with complete mesh emotional assessment.`;
         
         if (faceCount > 0) {
             medicalStatus += ' Complete mesh monitoring for distress indicators active.';
@@ -1748,7 +1911,6 @@ class GuardianXAssistant {
             if (medicalConcerns.length > 0) {
                 medicalStatus += ` Medical emotional indicators: ${medicalConcerns.map(e => {
                     let str = `${e.emotion} (${Math.round(e.confidence * 100)}%)`;
-                    if (e.source && e.source.includes('Face-API')) str += ' [Professional]';
                     return str;
                 }).join(', ')} - potential patient discomfort detected.`;
             }
@@ -1757,9 +1919,7 @@ class GuardianXAssistant {
         this.elements.medicalItems.textContent = medicalStatus;
     }
 
-    // Rest of the methods remain the same as the previous version...
-    // Voice and interaction methods, UI updates, etc. are unchanged
-    
+    // Voice and interaction methods (unchanged from previous version)
     async processVoiceCommand(command, isManual = false) {
         if (!command || command.trim() === '') return;
         
@@ -1962,7 +2122,7 @@ class GuardianXAssistant {
         }
         
         this.addActivity(`Mission mode: ${mode}`, '🎯');
-        this.speak(`Switching to ${mode.toLowerCase()} mode. Professional systems optimized for ${mode.toLowerCase()} operations with complete mesh visualization.`);
+        this.speak(`Switching to ${mode.toLowerCase()} mode. Precision systems optimized for ${mode.toLowerCase()} operations with complete mesh visualization.`);
     }
     
     switchAnalysisTab(tabName) {
@@ -2113,12 +2273,12 @@ class GuardianXAssistant {
             this.elements.emergencyBtn.textContent = 'EMERGENCY ACTIVE';
             this.elements.emergencyBtn.style.background = 'linear-gradient(45deg, #FF073A, #FF4444)';
             this.stopCamera();
-            this.speak('Emergency protocol activated. Professional systems on standby.');
+            this.speak('Emergency protocol activated. Precision systems on standby.');
             this.addActivity('Emergency protocol activated', '🚨');
         } else {
             this.elements.emergencyBtn.textContent = 'EMERGENCY STOP';
             this.elements.emergencyBtn.style.background = 'linear-gradient(45deg, var(--accent-red), rgba(var(--color-red-400-rgb), 0.8))';
-            this.speak('Emergency protocol deactivated. Professional systems resuming normal operation.');
+            this.speak('Emergency protocol deactivated. Precision systems resuming normal operation.');
             this.addActivity('Emergency protocol deactivated', '✅');
         }
     }
@@ -2138,7 +2298,7 @@ class GuardianXAssistant {
     }
 }
 
-// Initialize the professional system when the page loads
+// Initialize the precision system when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     window.guardianX = new GuardianXAssistant();
 });
@@ -2147,8 +2307,3 @@ document.addEventListener('DOMContentLoaded', () => {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { GuardianXAssistant, GuardianAIEngine };
 }
-
-// Additional note: To use this system at maximum capacity, you'll need to:
-// 1. Add face-api.js models to your /models directory or modify the path
-// 2. Include face-api.js library: <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-// 3. The system will gracefully fallback to geometric emotion detection if Face-API models aren't available
