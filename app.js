@@ -1125,234 +1125,173 @@ class GuardianXAssistant {
         requestAnimationFrame(detectLoop);
     }
     
-   // Full emotion detection code block to replace in your class
-
-analyzeEmotionsFromBlendShapes(faceBlendshapes) {
-    const emotions = [];
-    faceBlendshapes.forEach((blendshapes, faceIndex) => {
-        if (blendshapes && blendshapes.categories) {
-            const emotionScores = {
-                happy: 0,
-                sad: 0,
-                angry: 0,
-                surprised: 0,
-                fear: 0,
-                disgust: 0,
-                neutral: 0
-            };
-            blendshapes.categories.forEach(category => {
-                const name = category.categoryName.toLowerCase();
-                const score = category.score;
-                if (name.includes('smile') || name.includes('mouth_smile')) {
-                    emotionScores.happy = Math.max(emotionScores.happy, score);
-                } else if (name.includes('frown') || name.includes('mouth_frown')) {
-                    emotionScores.sad = Math.max(emotionScores.sad, score);
-                } else if (name.includes('brow_down') || name.includes('squint')) {
-                    emotionScores.angry = Math.max(emotionScores.angry, score * 0.6);
-                } else if (name.includes('eye_wide') || name.includes('brow_up')) {
-                    emotionScores.surprised = Math.max(emotionScores.surprised, score);
-                } else if (name.includes('jaw_open') && score > 0.2) {
-                    emotionScores.surprised = Math.max(emotionScores.surprised, score);
-                } else if (name.includes('nose_wrinkle') || name.includes('upper_lip_raise')) {
-                    emotionScores.disgust = Math.max(emotionScores.disgust, score * 0.8);
-                } else if (name.includes('mouth_press') || name.includes('lip_tighten')) {
-                    emotionScores.fear = Math.max(emotionScores.fear, score * 0.6);
-                    emotionScores.angry = Math.max(emotionScores.angry, score * 0.4);
+    analyzeEmotionsFromBlendshapes(faceBlendshapes) {
+        const emotions = [];
+        
+        faceBlendshapes.forEach((blendshapes, faceIndex) => {
+            if (blendshapes && blendshapes.categories) {
+                // Extract emotion-related blend shapes
+                const emotionScores = {
+                    happy: 0,
+                    sad: 0,
+                    angry: 0,
+                    surprised: 0,
+                    fear: 0,
+                    disgust: 0,
+                    neutral: 1
+                };
+                
+                blendshapes.categories.forEach(category => {
+                    const name = category.categoryName.toLowerCase();
+                    const score = category.score;
+                    
+                    // Map blend shape names to emotions
+                    if (name.includes('smile') || name.includes('mouth_smile')) {
+                        emotionScores.happy = Math.max(emotionScores.happy, score);
+                    } else if (name.includes('frown') || name.includes('mouth_frown')) {
+                        emotionScores.sad = Math.max(emotionScores.sad, score);
+                    } else if (name.includes('brow_down') || name.includes('squint')) {
+                        emotionScores.angry = Math.max(emotionScores.angry, score);
+                    } else if (name.includes('eye_wide') || name.includes('brow_up')) {
+                        emotionScores.surprised = Math.max(emotionScores.surprised, score);
+                    } else if (name.includes('jaw_open') && score > 0.3) {
+                        emotionScores.surprised = Math.max(emotionScores.surprised, score * 0.7);
+                    }
+                });
+                
+                // Determine dominant emotion
+                let maxEmotion = 'neutral';
+                let maxScore = 0.3; // Threshold for emotion detection
+                
+                Object.entries(emotionScores).forEach(([emotion, score]) => {
+                    if (score > maxScore) {
+                        maxEmotion = emotion;
+                        maxScore = score;
+                    }
+                });
+                
+                emotions.push({
+                    faceIndex,
+                    emotion: maxEmotion,
+                    confidence: maxScore,
+                    allScores: emotionScores
+                });
+            } else {
+                emotions.push({
+                    faceIndex,
+                    emotion: 'neutral',
+                    confidence: 0.5,
+                    allScores: { neutral: 0.5 }
+                });
+            }
+        });
+        
+        return emotions;
+    }
+    
+    analyzeEmotionsFromLandmarks(faceLandmarks) {
+        // Fallback emotion analysis using geometric features of landmarks
+        const emotions = [];
+        
+        faceLandmarks.forEach((landmarks, faceIndex) => {
+            if (landmarks && landmarks.length > 0) {
+                // Basic emotion detection using landmark positions
+                // This is a simplified approach - in production, you'd want more sophisticated analysis
+                
+                const emotionScores = {
+                    happy: this.detectSmileFromLandmarks(landmarks),
+                    sad: this.detectSadnessFromLandmarks(landmarks),
+                    surprised: this.detectSurpriseFromLandmarks(landmarks),
+                    neutral: 0.5
+                };
+                
+                // Find dominant emotion
+                let maxEmotion = 'neutral';
+                let maxScore = 0.3;
+                
+                Object.entries(emotionScores).forEach(([emotion, score]) => {
+                    if (score > maxScore) {
+                        maxEmotion = emotion;
+                        maxScore = score;
+                    }
+                });
+                
+                emotions.push({
+                    faceIndex,
+                    emotion: maxEmotion,
+                    confidence: maxScore,
+                    allScores: emotionScores
+                });
+            }
+        });
+        
+        return emotions;
+    }
+    
+    detectSmileFromLandmarks(landmarks) {
+        try {
+            // Mouth corner landmarks (simplified detection)
+            if (landmarks.length >= 468) {
+                const leftMouth = landmarks[61]; // Approximate left mouth corner
+                const rightMouth = landmarks[291]; // Approximate right mouth corner
+                const centerMouth = landmarks[13]; // Mouth center
+                
+                if (leftMouth && rightMouth && centerMouth) {
+                    // Check if mouth corners are raised (smile indicator)
+                    const mouthCurvature = (leftMouth.y + rightMouth.y) / 2 - centerMouth.y;
+                    return Math.max(0, Math.min(1, mouthCurvature * 10)); // Scale and clamp
                 }
-            });
-            emotionScores.neutral = 0.15;
-
-            let maxEmotion = 'neutral';
-            let maxScore = 0.05; // Lowered threshold for higher sensitivity
-
-            Object.entries(emotionScores).forEach(([emotion, score]) => {
-                if (score > maxScore) {
-                    maxEmotion = emotion;
-                    maxScore = score;
+            }
+        } catch (error) {
+            console.warn('Error detecting smile:', error);
+        }
+        return 0;
+    }
+    
+    detectSadnessFromLandmarks(landmarks) {
+        try {
+            // Simplified sadness detection based on mouth and eyebrow positions
+            if (landmarks.length >= 468) {
+                const leftMouth = landmarks[61];
+                const rightMouth = landmarks[291];
+                const centerMouth = landmarks[13];
+                
+                if (leftMouth && rightMouth && centerMouth) {
+                    // Check if mouth corners are lowered (sadness indicator)
+                    const mouthCurvature = centerMouth.y - (leftMouth.y + rightMouth.y) / 2;
+                    return Math.max(0, Math.min(1, mouthCurvature * 15));
                 }
-            });
-
-            emotions.push({
-                faceIndex,
-                emotion: maxEmotion,
-                confidence: maxScore,
-                allScores: emotionScores
-            });
-        } else {
-            emotions.push({
-                faceIndex,
-                emotion: 'neutral',
-                confidence: 0.2,
-                allScores: { neutral: 0.2 }
-            });
+            }
+        } catch (error) {
+            console.warn('Error detecting sadness:', error);
         }
-    });
-    return emotions;
-},
-
-analyzeEmotionsFromLandmarks(faceLandmarks) {
-    const emotions = [];
-    faceLandmarks.forEach((landmarks, faceIndex) => {
-        if (landmarks && landmarks.length) {
-            const emotionScores = {
-                happy: this.detectSmile(landmarks),
-                sad: this.detectSadness(landmarks),
-                angry: this.detectAngry(landmarks),
-                surprised: this.detectSurprise(landmarks),
-                fear: this.detectFear(landmarks),
-                disgust: this.detectDisgust(landmarks),
-                neutral: 0.1
-            };
-            let maxEmotion = 'neutral';
-            let maxScore = 0.08;
-            Object.entries(emotionScores).forEach(([emotion, score]) => {
-                if (score > maxScore) {
-                    maxEmotion = emotion;
-                    maxScore = score;
+        return 0;
+    }
+    
+    detectSurpriseFromLandmarks(landmarks) {
+        try {
+            // Simplified surprise detection based on eye openness
+            if (landmarks.length >= 468) {
+                const leftEyeTop = landmarks[159];
+                const leftEyeBottom = landmarks[145];
+                const rightEyeTop = landmarks[386];
+                const rightEyeBottom = landmarks[374];
+                
+                if (leftEyeTop && leftEyeBottom && rightEyeTop && rightEyeBottom) {
+                    // Measure eye openness
+                    const leftEyeHeight = Math.abs(leftEyeTop.y - leftEyeBottom.y);
+                    const rightEyeHeight = Math.abs(rightEyeTop.y - rightEyeBottom.y);
+                    const avgEyeHeight = (leftEyeHeight + rightEyeHeight) / 2;
+                    
+                    // High eye openness indicates surprise
+                    return Math.max(0, Math.min(1, (avgEyeHeight - 0.01) * 50));
                 }
-            });
-            emotions.push({
-                faceIndex,
-                emotion: maxEmotion,
-                confidence: maxScore,
-                allScores: emotionScores
-            });
-        }
-    });
-    return emotions;
-},
-
-detectSmile(landmarks) {
-    try {
-        if (landmarks.length >= 468) {
-            const leftMouth = landmarks[61];
-            const rightMouth = landmarks[291];
-            const centerMouth = landmarks[13];
-            if (leftMouth && rightMouth && centerMouth) {
-                const mouthCurvature = (leftMouth.y + rightMouth.y) / 2 - centerMouth.y;
-                return Math.min(1, Math.max(0, mouthCurvature * 12));
             }
+        } catch (error) {
+            console.warn('Error detecting surprise:', error);
         }
-    } catch (e) {
-        console.warn('Smile detection error:', e);
+        return 0;
     }
-    return 0;
-},
-
-detectSadness(landmarks) {
-    try {
-        if (landmarks.length >= 468) {
-            const leftMouth = landmarks[61];
-            const rightMouth = landmarks[291];
-            const centerMouth = landmarks[13];
-            const browLeft = landmarks[55];
-            const browRight = landmarks[285];
-            if (leftMouth && rightMouth && centerMouth && browLeft && browRight) {
-                const mouthCurvature = centerMouth.y - (leftMouth.y + rightMouth.y) / 2;
-                const browAvg = (browLeft.y + browRight.y) / 2;
-                const browBaseline = 0.4;
-                const browLowering = Math.max(0, browAvg - browBaseline);
-                const mouthScore = Math.min(1, Math.max(0, mouthCurvature * 12));
-                const browScore = Math.min(1, Math.max(0, browLowering * 7));
-                const totalScore = mouthScore * 0.7 + browScore * 0.3;
-                return Math.min(1, totalScore);
-            }
-        }
-    } catch (e) {
-        console.warn('Sadness detection error:', e);
-    }
-    return 0;
-},
-
-detectAngry(landmarks) {
-    try {
-        if (landmarks.length >= 468) {
-            const browLeft = landmarks[105];
-            const browRight = landmarks[334];
-            const eyeLeft = landmarks[133];
-            const eyeRight = landmarks[362];
-            if (browLeft && browRight && eyeLeft && eyeRight) {
-                const browLower = Math.max(browLeft.y, browRight.y);
-                const eyeSquint = Math.min(
-                    Math.abs(landmarks[159].y - landmarks[145].y),
-                    Math.abs(landmarks[386].y - landmarks[374].y)
-                );
-                const browScore = Math.min(1, Math.max(0, (browLower - 0.44) * 15));
-                const eyeScore = Math.min(1, Math.max(0, (0.03 - eyeSquint) * 40));
-                return Math.min(1, browScore + eyeScore);
-            }
-        }
-    } catch (e) {
-        console.warn('Anger detection error:', e);
-    }
-    return 0;
-},
-
-detectSurprise(landmarks) {
-    try {
-        if (landmarks.length >= 468) {
-            const eyeTopLeft = landmarks[159];
-            const eyeBottomLeft = landmarks[145];
-            const eyeTopRight = landmarks[386];
-            const eyeBottomRight = landmarks[374];
-            const jawTip = landmarks[152];
-            const upperLip = landmarks[13];
-            if (eyeTopLeft && eyeBottomLeft && eyeTopRight && eyeBottomRight && jawTip && upperLip) {
-                const eyeOpenLeft = Math.abs(eyeTopLeft.y - eyeBottomLeft.y);
-                const eyeOpenRight = Math.abs(eyeTopRight.y - eyeBottomRight.y);
-                const avgEyeOpen = (eyeOpenLeft + eyeOpenRight) / 2;
-                const mouthOpen = Math.abs(jawTip.y - upperLip.y);
-                const eyeScore = Math.min(1, Math.max(0, (avgEyeOpen - 0.018) * 130));
-                const mouthScore = Math.min(1, Math.max(0, (mouthOpen - 0.06) * 25));
-                return Math.max(eyeScore, mouthScore * 0.8);
-            }
-        }
-    } catch (e) {
-        console.warn('Surprise detection error:', e);
-    }
-    return 0;
-},
-
-detectFear(landmarks) {
-    try {
-        if (landmarks.length >= 468) {
-            const browInnerLeft = landmarks[70];
-            const browInnerRight = landmarks[300];
-            const upperLip = landmarks[13];
-            const noseBase = landmarks[168];
-            if (browInnerLeft && browInnerRight && upperLip && noseBase) {
-                const browHeight = Math.min(browInnerLeft.y, browInnerRight.y);
-                const lipNoseDist = noseBase.y - upperLip.y;
-                const browScore = Math.min(1, Math.max(0, (0.35 - browHeight) * 25));
-                const lipScore = Math.min(1, Math.max(0, lipNoseDist * 15));
-                return Math.min(1, browScore * 0.6 + lipScore * 0.4);
-            }
-        }
-    } catch (e) {
-        console.warn('Fear detection error:', e);
-    }
-    return 0;
-},
-
-detectDisgust(landmarks) {
-    try {
-        if (landmarks.length >= 468) {
-            const noseLeft = landmarks[4];
-            const noseRight = landmarks[274];
-            const upperLipLeft = landmarks[13];
-            const upperLipRight = landmarks[14];
-            if (noseLeft && noseRight && upperLipLeft && upperLipRight) {
-                const noseWrinkle = Math.max(noseLeft.x - 0.5, noseRight.x - 0.5);
-                const lipRaise = Math.max(upperLipLeft.y, upperLipRight.y);
-                return Math.min(1, noseWrinkle * 20 + (0.5 - lipRaise) * 20);
-            }
-        }
-    } catch (e) {
-        console.warn('Disgust detection error:', e);
-    }
-    return 0;
-}
-
     
     drawDetections(predictions, faceResults, emotions) {
         const canvas = this.elements.detectionCanvas;
